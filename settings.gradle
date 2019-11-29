@@ -1,0 +1,2 @@
+include ':app', ':router-core', ':router-annotation', ':router-compiler', ':module1'
+rootProject.name='ViomiRouterLib'
