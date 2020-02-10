@@ -22,6 +22,7 @@ public class RouteMeta {
 
     public enum Type {
         ACTIVITY,
+        FRAGMENT,
         ISERVICE
     }
 

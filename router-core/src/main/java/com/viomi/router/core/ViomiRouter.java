@@ -6,11 +6,15 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.Pair;
 
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 import com.viomi.router.annotation.Route;
 import com.viomi.router.annotation.modle.RouteMeta;
@@ -42,6 +46,13 @@ import java.util.Set;
  * @UpdateDate: 2019-11-19 10:58
  * @UpdateRemark:
  * @Version: 1.0
+ *
+ * 打开页面处理流程
+ *
+ * 1、构造PostCard对象
+ * 2、通过PostCard对象从  Warehouse.groupIndex  中生成出 RouteMeta，这个 RouteMeta 包含了path、group、type、目标class 信息
+ * 3、拿到 RouteMeta 信息后，构建 Intent 对象，将 目标class 填进Intent中，进行普通  startActivity
+ *
  */
 public class ViomiRouter {
 
@@ -99,6 +110,9 @@ public class ViomiRouter {
         // 获取所有apt生成的路由类的全类名(路由表)
         Set<String> routerMap = ClassUtils.getFileNameByPackageName(mContext, ROUTE_ROOT_PAKCAGE);
         for (String className : routerMap) {
+
+            RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "className[ " + className + "]");
+
             if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
                 // root种注册的是分组信息，将分组信息加入仓库中
                 ((IRouteRoot)Class.forName(className).getConstructor().newInstance()).loadInto(Warehouse.groupIndex);
@@ -287,6 +301,54 @@ public class ViomiRouter {
      */
     public void inject(Activity instance) {
         ExtraManager.getInstance().loadExtras(instance);
+    }
+
+    public void inject(Fragment instance) {
+        ExtraManager.getInstance().loadExtras(instance);
+    }
+
+    /**
+     * 通过构建PostCard，生成RouteMeta，获得其中的 destination，返回这个 destination class
+     *
+     * @param card
+     * @return  返回destination 的 class，在在外面反射获得class的实例
+     *
+     * 这种情况主要针对Fragment
+     */
+    public Pair<Class<?>, Bundle> getProvidePage(PostCard card) {
+        if (card == null) {
+            return null;
+        }
+
+        RouteMeta routeMeta = Warehouse.routes.get(card.getPath());
+        if (routeMeta == null) {
+            Class<? extends  IRouteGroup> groupMeta = Warehouse.groupIndex.get(card.getGroup());
+            if (null == groupMeta) {
+                throw new NoRouteFoundException("没找到对应路由：分组=" + card.getGroup() + "   路径=" + card.getPath());
+            }
+            IRouteGroup iGroupInstance;
+            try {
+                iGroupInstance = groupMeta.getConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("路由分组映射表记录失败。", e);
+            }
+            iGroupInstance.loadInto(Warehouse.routes);
+            // 已经准备过了就可以移除（不会一直存在内存中）
+            Warehouse.groupIndex.remove(card.getGroup());
+            // 再次进入
+            prepareCard(card);
+        } else {
+            // 要对外提供Fragment实现类
+            card.setDestination(routeMeta.getDestination());
+            card.setType(routeMeta.getType());
+        }
+
+        if (card == null) {
+            return null;
+        }
+
+        return new Pair(card.getDestination(), card.getExtras());
     }
 
 }

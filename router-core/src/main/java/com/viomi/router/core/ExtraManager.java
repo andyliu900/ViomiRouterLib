@@ -1,7 +1,10 @@
 package com.viomi.router.core;
 
 import android.app.Activity;
+import android.util.Log;
 import android.util.LruCache;
+
+import androidx.fragment.app.Fragment;
 
 import com.viomi.router.core.template.IExtra;
 
@@ -55,6 +58,22 @@ public class ExtraManager {
                 + SUFFIX_AUTOWIRED).getConstructor().newInstance();
             }
             iExtra.loadExtra(instance);
+            classCache.put(className, iExtra);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadExtras(Fragment instance) {
+        String className = instance.getClass().getName();
+        IExtra iExtra = classCache.get(className);
+        try {
+            if (null == iExtra) {
+                iExtra = (IExtra)Class.forName(instance.getClass().getName()
+                        + SUFFIX_AUTOWIRED).getConstructor().newInstance();
+            }
+            iExtra.loadExtra(instance);
+
             classCache.put(className, iExtra);
         } catch (Exception e) {
             e.printStackTrace();

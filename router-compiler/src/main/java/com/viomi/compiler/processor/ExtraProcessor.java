@@ -126,6 +126,7 @@ public class ExtraProcessor extends AbstractProcessor {
 
     private void generateAutoWired() throws IOException {
         TypeMirror typeActivity = elementUtils.getTypeElement(Constants.ACTIVITY).asType();
+        TypeMirror typeFragment = elementUtils.getTypeElement(Constants.FRAGMENT).asType();
         TypeElement iExtra = elementUtils.getTypeElement(Constants.IEXTRA);
 
         if (!Tools.isEmpty(parentAndChild)) {
@@ -133,8 +134,16 @@ public class ExtraProcessor extends AbstractProcessor {
             ParameterSpec parameterSpec = ParameterSpec.builder(TypeName.BOOLEAN.OBJECT, "target").build();
             for (Map.Entry<TypeElement, List<Element>> entry : parentAndChild.entrySet()) {
                 TypeElement rawClassElement = entry.getKey();
-                if (!typeUtils.isSubtype(rawClassElement.asType(), typeActivity)) {
-                    throw new RuntimeException("just support activity filed: " + rawClassElement);
+                if (!typeUtils.isSubtype(rawClassElement.asType(), typeActivity)
+                    && !typeUtils.isSubtype(rawClassElement.asType(), typeFragment)) {
+                    throw new RuntimeException("just support activity or fragment filed: " + rawClassElement);
+                }
+
+                String currentTypeStr = "";
+                if (typeUtils.isSubtype(rawClassElement.asType(), typeActivity)) {
+                    currentTypeStr = Constants.ACTIVITY;
+                } else if (typeUtils.isSubtype(rawClassElement.asType(), typeFragment)) {
+                    currentTypeStr = Constants.FRAGMENT;
                 }
 
                 // 封装的函数生成类
@@ -147,7 +156,7 @@ public class ExtraProcessor extends AbstractProcessor {
                 // 遍历属性
                 for (int i = 0; i < entry.getValue().size(); i++) {
                     Element element = entry.getValue().get(i);
-                    loadExtra.buildStatement(element);
+                    loadExtra.buildStatement(element, currentTypeStr);
                 }
 
                 // 生成java类名

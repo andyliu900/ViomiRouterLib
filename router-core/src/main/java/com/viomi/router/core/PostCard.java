@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Pair;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
@@ -262,6 +263,10 @@ public class PostCard extends RouteMeta {
 
     public Object navigation(Context context, int requestCode, NavigationCallback callback) {
         return ViomiRouter.getInstance().navigation(context, this, requestCode, callback);
+    }
+
+    public Pair<Class<?>, Bundle> getProviderPage() {
+        return ViomiRouter.getInstance().getProvidePage(this);
     }
     
 }

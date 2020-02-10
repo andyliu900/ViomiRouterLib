@@ -61,7 +61,12 @@ public class LoadExtraBuilder {
         this.typeUtils = typeUtils;
     }
 
-    public void buildStatement(Element element) {
+    /**
+     * 增加Fragment 参数属性
+     *
+     * @param element
+     */
+    public void buildStatement(Element element, String currentTypeStr) {
         TypeMirror typeMirror = element.asType();
         int type = typeMirror.getKind().ordinal();
         // 属性名 String text 获得text
@@ -70,33 +75,41 @@ public class LoadExtraBuilder {
         String extraName = element.getAnnotation(Extra.class).name();
         extraName = Tools.isEmpty(extraName) ? fieldName : extraName;
         String defaultValue = "t." + fieldName;
-        String statement = defaultValue + " = t.getIntent().";
+
+        String statement = "";
+        if (Constants.ACTIVITY.equals(currentTypeStr)) {
+            statement = defaultValue + " = t.getIntent().getExtras().";
+        } else if (Constants.FRAGMENT.equals(currentTypeStr)) {
+            statement = defaultValue + " = t.getArguments().";
+        }
+
         if (type == TypeKind.BOOLEAN.ordinal()) {
-            statement += "getBooleanExtra($S, " + defaultValue + ")";
+            statement += "getBoolean($S, " + defaultValue + ")";
         } else if (type == TypeKind.BYTE.ordinal()) {
-            statement += "getByteExtra($S, " + defaultValue + ")";
+            statement += "getByte($S, " + defaultValue + ")";
         } else if (type == TypeKind.SHORT.ordinal()) {
-            statement += "getShortExtra($S, " + defaultValue + ")";
+            statement += "getShort($S, " + defaultValue + ")";
         } else if (type == TypeKind.INT.ordinal()) {
-            statement += "getIntExtra($S, " + defaultValue + ")";
+            statement += "getInt($S, " + defaultValue + ")";
         } else if (type == TypeKind.LONG.ordinal()) {
-            statement += "getLongExtra($S, " + defaultValue + ")";
+            statement += "getLong($S, " + defaultValue + ")";
         } else if (type == TypeKind.CHAR.ordinal()) {
-            statement += "getCharExtra($S, " + defaultValue + ")";
+            statement += "getChar($S, " + defaultValue + ")";
         } else if (type == TypeKind.FLOAT.ordinal()) {
-            statement += "getFloatExtra($S, " + defaultValue + ")";
+            statement += "getFloat($S, " + defaultValue + ")";
         } else if (type == TypeKind.DOUBLE.ordinal()) {
-            statement += "getDoubleExtra($S, " + defaultValue + ")";
+            statement += "getDouble($S, " + defaultValue + ")";
         } else {
             //数组类型
             if (type == TypeKind.ARRAY.ordinal()) {
-                addArrayStatement(statement, fieldName, extraName, typeMirror, element);
+                addArrayStatement(statement, fieldName, extraName, typeMirror, element, currentTypeStr);
             } else {
                 //Object
                 addObjectStatement(statement, fieldName, extraName, typeMirror, element);
             }
             return;
         }
+
         builder.addStatement(statement, extraName);
     }
 
@@ -110,34 +123,34 @@ public class LoadExtraBuilder {
      * @param element
      */
     private void addArrayStatement(String statement, String fieldName, String extraName, TypeMirror
-            typeMirror, Element element) {
+            typeMirror, Element element, String currentTypeStr) {
         switch (typeMirror.toString()) {
             case Constants.BOOLEANARRAY:
-                statement += "getBooleanArrayExtra($S)";
+                statement += "getBooleanArray($S)";
                 break;
             case Constants.INTARRAY:
-                statement += "getIntArrayExtra($S)";
+                statement += "getIntArray($S)";
                 break;
             case Constants.SHORTARRAY:
-                statement += "getShortArrayExtra($S)";
+                statement += "getShortArray($S)";
                 break;
             case Constants.FLOATARRAY:
-                statement += "getFloatArrayExtra($S)";
+                statement += "getFloatArray($S)";
                 break;
             case Constants.DOUBLEARRAY:
-                statement += "getDoubleArrayExtra($S)";
+                statement += "getDoubleArray($S)";
                 break;
             case Constants.BYTEARRAY:
-                statement += "getByteArrayExtra($S)";
+                statement += "getByteArray($S)";
                 break;
             case Constants.CHARARRAY:
-                statement += "getCharArrayExtra($S)";
+                statement += "getCharArray($S)";
                 break;
             case Constants.LONGARRAY:
-                statement += "getLongArrayExtra($S)";
+                statement += "getLongArray($S)";
                 break;
             case Constants.STRINGARRAY:
-                statement += "getStringArrayExtra($S)";
+                statement += "getStringArray($S)";
                 break;
                 default:
                     // Parcelable 数组
@@ -150,9 +163,17 @@ public class LoadExtraBuilder {
                         throw new RuntimeException("Not Support Extra Type:" + typeMirror + " " +
                                 element);
                     }
-                    statement = "$T[] " + fieldName + " = t.getIntent()" +
-                            ".getParcelableArrayExtra" +
-                            "($S)";
+
+                    if (Constants.ACTIVITY.equals(currentTypeStr)) {
+                        statement = "$T[] " + fieldName + " = t.getIntent()..getExtras()." +
+                                ".getParcelableArray" +
+                                "($S)";
+                    } else if (Constants.FRAGMENT.equals(currentTypeStr)) {
+                        statement = "$T[] " + fieldName + " = t.getArguments()" +
+                                ".getParcelableArray" +
+                                "($S)";
+                    }
+
                     builder.addStatement(statement, parcelabType, extraName);
                     builder.beginControlFlow("if( null != $L)", fieldName);
                     statement = defaultValue + " = new $T[" + fieldName + ".length]";
@@ -183,9 +204,9 @@ public class LoadExtraBuilder {
                                     Element element) {
         // Parcelable
         if (typeUtils.isSubtype(typeMirror, parcelabType)) {
-            statement += "getParcelableExtra($S)";
+            statement += "getParcelable($S)";
         } else if (typeMirror.toString().equals(Constants.STRING)) {
-            statement += "getStringExtra($S)";
+            statement += "getString($S)";
         } else if (typeUtils.isSubtype(typeMirror, iServiceType)) {
             statement = "t." + fieldName + " = ($T) $T.getInstance().build($S).navigation()";
             builder.addStatement(statement, TypeName.get(element.asType()), Constants.ROUTER, extraName);
@@ -211,11 +232,11 @@ public class LoadExtraBuilder {
 
                 // Parcelable 类型
                 if (typeUtils.isSubtype(typeElement.asType(), parcelabType)) {
-                    statement += "getParcelableArrayListExtra($S)";
+                    statement += "getParcelableArrayList($S)";
                 } else if (typeElement.asType().toString().equals(Constants.STRING)) {
-                    statement += "getStringArrayListExtra($S)";
+                    statement += "getStringArrayList($S)";
                 } else if (typeElement.asType().toString().equals(Constants.INTEGER)) {
-                    statement += "getIntegerArrayListExtra($S)";
+                    statement += "getIntegerArrayList($S)";
                 } else {
                     throw new RuntimeException("Not Support Extra Type : " + typeMirror + " " +
                             element);

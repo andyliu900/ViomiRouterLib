@@ -21,6 +21,7 @@ public class Constants {
     public static final ClassName ROUTER = ClassName.get("com.viomi.router.core.ViomiRouter", "ViomiRouter");
 
     public static final String ACTIVITY = "android.app.Activity";
+    public static final String FRAGMENT = "androidx.fragment.app.Fragment";
     public static final String ISERVICE = "com.viomi.router.core.template.IService";
 
     public static final String ARGUMENTS_NAME = "moduleName";

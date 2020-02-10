@@ -123,8 +123,8 @@ public class RouterProcessor extends AbstractProcessor {
     }
 
     private void processorRoute(Set<? extends Element> rootElements) {
-        // 获得Activity这个类的节点信息
         TypeElement activity = elementUtils.getTypeElement(Constants.ACTIVITY);
+        TypeElement fragment = elementUtils.getTypeElement(Constants.FRAGMENT);
         TypeElement service = elementUtils.getTypeElement(Constants.ISERVICE);
         for (Element element : rootElements) {
             RouteMeta routeMeta;
@@ -134,10 +134,12 @@ public class RouterProcessor extends AbstractProcessor {
             Route route = element.getAnnotation(Route.class);
             if (typeUtils.isSubtype(typeMirror, activity.asType())) {
                 routeMeta = new RouteMeta(RouteMeta.Type.ACTIVITY, route, element);
+            } else if (typeUtils.isSubtype(typeMirror, fragment.asType())) {
+                routeMeta = new RouteMeta(RouteMeta.Type.FRAGMENT, route, element);
             } else if (typeUtils.isSubtype(typeMirror, service.asType())) {
                 routeMeta = new RouteMeta(RouteMeta.Type.ISERVICE, route, element);
             } else {
-                throw new RuntimeException("Just support Activity or IService Route: " + element);
+                throw new RuntimeException("Just support Activity or Fragment or IService Route: " + element);
             }
             categories(routeMeta);
         }
