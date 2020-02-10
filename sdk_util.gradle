@@ -1,17 +1,23 @@
 ext {
     ROUTERSDK_DEBUG = true
-    ROUTERSDK_VERSION_CODE = 1
-    ROUTERSDK_VERSION_NAME = "1.0.0.0"
 
     getDirSuffix = this.&getDirSuffix
     ROUTER_TASKS_GROUP = "VIOMI-ROUTER"
-
     ROUTER_DATABASE_NAME = "viomi_router_records.db"
 
     GITHUB_REPO_PATH = "/Users/randysu/GitLab/viomi_sdk"       //这里指定的就是刚刚新建项目后clone下来的在本地的路径
+
+    ROUTERSDK_VERSION_CODE = 2
+    ROUTERSDK_VERSION_NAME = "1.0.0.2"
     PUBLISH_GROUP_ID = 'com.viomi.router'
     PUBLISH_ARTIFACT_ID = 'viomi-router-lib'
     PUBLISH_VERSION = ROUTERSDK_VERSION_NAME
+
+    ROUTERSDK_COMPILER_VERSION_CODE = 2
+    ROUTERSDK_COMPILER_VERSION_NAME = "1.0.0.2"
+    COMPILER_PUBLISH_GROUP_ID = 'com.viomi.router.compiler'
+    COMPILER_PUBLISH_ARTIFACT_ID = 'viomi-router-compiler-lib'
+    COMPILER_PUBLISH_VERSION = ROUTERSDK_COMPILER_VERSION_NAME
 }
 
 String getDirSuffix() {
