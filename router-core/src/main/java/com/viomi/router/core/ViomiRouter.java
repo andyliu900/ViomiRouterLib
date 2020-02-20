@@ -17,11 +17,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.viomi.router.annotation.Route;
+import com.viomi.router.annotation.modle.EventMeta;
 import com.viomi.router.annotation.modle.RouteMeta;
 import com.viomi.router.core.callback.InterceptorCallback;
 import com.viomi.router.core.callback.NavigationCallback;
 import com.viomi.router.core.exception.NoRouteFoundException;
 import com.viomi.router.core.implments.InterceptorImpl;
+import com.viomi.router.core.template.IEvent;
 import com.viomi.router.core.template.IInterceptorGroup;
 import com.viomi.router.core.template.IRouteGroup;
 import com.viomi.router.core.template.IRouteRoot;
@@ -30,6 +32,7 @@ import com.viomi.router.core.utils.ClassUtils;
 import com.viomi.router.core.utils.RouterLogX;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -58,11 +61,15 @@ public class ViomiRouter {
 
     private static final String SUB_TAG = ViomiRouter.class.getName();
 
-    private static final String ROUTE_ROOT_PAKCAGE = "com.viomi.router.routes";
+
+    private static String ROUTE_ROOT_PAKCAGE = "com.viomi.router";
+    private static String ROUTER_PACKAGE = "routes";
+    private static String EVENT_PACKAGE = "events";
     private static final String SDK_NAME = "ViomiRouter";
     private static final String SEPARATOR = "_";
     private static final String SUFFIX_ROOT = "Root";
     private static final String SUFFIX_INTERCEPTOR = "Interceptor";
+    private static final String SUFFIX_EVENT = "Event";
 
     private static ViomiRouter instance;
     private static Application mContext;
@@ -113,16 +120,29 @@ public class ViomiRouter {
 
             RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "className[ " + className + "]");
 
-            if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
+            if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + ROUTER_PACKAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_ROOT)) {
                 // root种注册的是分组信息，将分组信息加入仓库中
                 ((IRouteRoot)Class.forName(className).getConstructor().newInstance()).loadInto(Warehouse.groupIndex);
-            } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTOR)) {
+            } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + ROUTER_PACKAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_INTERCEPTOR)) {
                 ((IInterceptorGroup)Class.forName(className).getConstructor().newInstance()).loadInto(Warehouse.interceptorsIndex);
+            } else if (className.startsWith(ROUTE_ROOT_PAKCAGE + "." + EVENT_PACKAGE + "." + SDK_NAME + SEPARATOR + SUFFIX_EVENT)) {
+                ((IEvent)Class.forName(className).getConstructor().newInstance()).loadInto(Warehouse.events);
             }
         }
 
         for (Map.Entry<String, Class<? extends IRouteGroup>> stringClassEntry : Warehouse.groupIndex.entrySet()) {
             RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "Root映射表[ " + stringClassEntry.getKey() + " : " + stringClassEntry.getValue() + "]");
+        }
+
+        for (Map.Entry<String, HashMap<String, EventMeta>> moduleEvent : Warehouse.events.entrySet()) {
+            String moduleName = moduleEvent.getKey();
+            RouterLogX.e(Env.ROUTER_TAG, SUB_TAG, "moduleName: " + moduleName);
+            HashMap<String, EventMeta> eventList = moduleEvent.getValue();
+            for (Map.Entry<String, EventMeta> event : eventList.entrySet()) {
+                String eventKey = event.getKey();
+                EventMeta eventMeta = event.getValue();
+                RouterLogX.e(Env.ROUTER_TAG, SUB_TAG, "eventKey: " + eventKey + "  event fullName: " + eventMeta.getFullJavaClassName());
+            }
         }
     }
 
@@ -349,6 +369,39 @@ public class ViomiRouter {
         }
 
         return new Pair(card.getDestination(), card.getExtras());
+    }
+
+    /**
+     * 根据moduleName和key找到对应的Event Class对象
+     *
+     * @param moduleName
+     * @param key
+     * @return
+     */
+    public Class<?> getEventByKey(String moduleName, String key) {
+        if (TextUtils.isEmpty(moduleName) || TextUtils.isEmpty(key)) {
+            return null;
+        }
+
+        try {
+            for (Map.Entry<String, HashMap<String, EventMeta>> entry : Warehouse.events.entrySet()) {
+                if (entry.getKey().equals(moduleName)) {
+                    HashMap<String, EventMeta> eventList = entry.getValue();
+                    for (Map.Entry<String, EventMeta> eventMetaEntry : eventList.entrySet()) {
+                        if (eventMetaEntry.getKey().equals(key)) {
+                            EventMeta eventMeta = eventMetaEntry.getValue();
+                            String eventFullJavaClassName = eventMeta.getFullJavaClassName();
+                            Class<?> eventClass = Class.forName(eventFullJavaClassName);
+                            return eventClass;
+                        }
+                    }
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }

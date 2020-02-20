@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.viomi.router.core.Env;
 import com.viomi.router.core.thread.DefaultPoolExecutor;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import dalvik.system.DexFile;
  */
 public class ClassUtils {
 
+    private static final String SUB_TAG = ClassUtils.class.getName();
+
     /**
      * 得到路由表类名
      *
@@ -64,6 +67,7 @@ public class ClassUtils {
                     Enumeration<String> dexEntries = dexFile.entries();
                     while (dexEntries.hasMoreElements()) {
                         String className = dexEntries.nextElement();
+                        RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "className: " + className);
                         if (!TextUtils.isEmpty(className) && className.startsWith(packageName)) {
                             classNames.add(className);
                         }

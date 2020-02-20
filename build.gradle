@@ -6,6 +6,7 @@ buildscript {
     repositories {
         maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+        maven { url "https://raw.githubusercontent.com/ViomiHome/viomi_sdk/master" }
         google()
         jcenter()
         
@@ -22,6 +23,7 @@ allprojects {
     repositories {
         maven{ url'http://maven.aliyun.com/nexus/content/groups/public/' }
         maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+        maven { url "https://raw.githubusercontent.com/ViomiHome/viomi_sdk/master" }
         google()
         jcenter()
         

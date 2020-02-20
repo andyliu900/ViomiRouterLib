@@ -1,5 +1,6 @@
 package com.viomi.router.core;
 
+import com.viomi.router.annotation.modle.EventMeta;
 import com.viomi.router.annotation.modle.RouteMeta;
 import com.viomi.router.core.template.IInterceptor;
 import com.viomi.router.core.template.IRouteGroup;
@@ -35,6 +36,9 @@ public class Warehouse {
 
     // service
     static Map<Class, IService> services = new HashMap<>();
+
+    // event
+    static HashMap<String, HashMap<String, EventMeta>> events = new HashMap<>();
 
     /**
      * 以键值对优先级的方式保存拦截对象

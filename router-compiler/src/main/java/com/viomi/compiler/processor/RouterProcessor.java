@@ -56,7 +56,7 @@ import javax.lang.model.util.Types;
 
 @AutoService(Processor.class)
 @SupportedOptions(Constants.ARGUMENTS_NAME)
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes(Constants.ANNOTATION_TYPE_ROUTE)
 public class RouterProcessor extends AbstractProcessor {
 
