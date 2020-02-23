@@ -33,9 +33,6 @@ import com.viomi.router.core.ViomiRouter;
 @Route(path = "/module1/module1Fragment")
 public class Module1Fragment extends Fragment {
 
-    @Extra
-    String msg;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,9 +46,6 @@ public class Module1Fragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Toast.makeText(getActivity(), "msg=" + msg, Toast.LENGTH_SHORT).show();
-        Log.i("LLL", "msg=" + msg);
 
     }
 }

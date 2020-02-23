@@ -16,6 +16,7 @@ import android.util.Pair;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.viomi.router.annotation.Event;
 import com.viomi.router.annotation.Route;
 import com.viomi.router.annotation.modle.EventMeta;
 import com.viomi.router.annotation.modle.RouteMeta;
@@ -372,13 +373,36 @@ public class ViomiRouter {
     }
 
     /**
+     * 设置Warehouse.events中的Event中传递参数，根据fullJavaClassName进行判断，理论上可以规避不同module相同名称的Event问题
+     *
+     * @param fullJavaClassName
+     * @param params
+     */
+    public void setEventParams(String fullJavaClassName, HashMap<String, Object> params) {
+        if (TextUtils.isEmpty(fullJavaClassName)) {
+            return;
+        }
+
+        for (Map.Entry<String, HashMap<String, EventMeta>> entry : Warehouse.events.entrySet()) {
+            HashMap<String, EventMeta> eventList = entry.getValue();
+            for (Map.Entry<String, EventMeta> eventMetaEntry : eventList.entrySet()) {
+                EventMeta eventMeta = eventMetaEntry.getValue();
+                if (fullJavaClassName.equals(eventMeta.getFullJavaClassName())) {
+                    eventMeta.setParams(params);
+                }
+            }
+        }
+    }
+
+    /**
      * 根据moduleName和key找到对应的Event Class对象
      *
      * @param moduleName
      * @param key
+     *
      * @return
      */
-    public Class<?> getEventByKey(String moduleName, String key) {
+    public <T> Class<T> getEventByKey(String moduleName, String key) {
         if (TextUtils.isEmpty(moduleName) || TextUtils.isEmpty(key)) {
             return null;
         }
@@ -391,7 +415,7 @@ public class ViomiRouter {
                         if (eventMetaEntry.getKey().equals(key)) {
                             EventMeta eventMeta = eventMetaEntry.getValue();
                             String eventFullJavaClassName = eventMeta.getFullJavaClassName();
-                            Class<?> eventClass = Class.forName(eventFullJavaClassName);
+                            Class eventClass = Class.forName(eventFullJavaClassName);
                             return eventClass;
                         }
                     }

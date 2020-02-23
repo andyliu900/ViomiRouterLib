@@ -1,6 +1,7 @@
 package com.viomi.module1.events;
 
 import com.viomi.router.annotation.Event;
+import com.viomi.router.core.BaseEvent;
 
 /**
  * Copyright (C), 2014-2020, 佛山云米科技有限公司
@@ -18,6 +19,6 @@ import com.viomi.router.annotation.Event;
  */
 
 @Event(key = "module2_event")
-public class Module2Event {
+public class Module2Event extends BaseEvent {
 
 }

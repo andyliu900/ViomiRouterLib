@@ -2,6 +2,8 @@ package com.viomi.router.annotation.modle;
 
 import com.viomi.router.annotation.Event;
 
+import java.util.HashMap;
+
 import javax.lang.model.element.Element;
 
 /**
@@ -50,6 +52,8 @@ public class EventMeta {
      */
     private String moduleName;
 
+    private HashMap<String, Object> params;
+
     public EventMeta() {
 
     }
@@ -65,6 +69,7 @@ public class EventMeta {
         this.destination = destination;
         this.key = key;
         this.moduleName = moduleName;
+        this.params = params;
     }
 
     public EventMeta(Element element, String fileName, String fullJavaClassName, Class<?> destination, Event event, String moduleName) {
@@ -121,5 +126,13 @@ public class EventMeta {
 
     public void setModuleName(String moduleName) {
         this.moduleName = moduleName;
+    }
+
+    public HashMap<String, Object> getParams() {
+        return params;
+    }
+
+    public void setParams(HashMap<String, Object> params) {
+        this.params = params;
     }
 }
