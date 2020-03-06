@@ -16,11 +16,29 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/start_module_mainfragment"
         android:onClick="startModule1Fragment"
         android:text="跳转到Module1的Fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/start_module_mainactivity"/>
+
+    <Button
+        android:id="@+id/start_module1_service"
+        android:onClick="startModule1Service"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="打开Module1的Service"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/start_module_mainfragment"/>
+
+    <Button
+        android:onClick="stopModule1Service"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="停止Module1的Service"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/start_module1_service"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@
 
     <application>
         <activity android:name=".Module1MainActivity"/>
+        <service android:name=".Module1Service"/>
     </application>
 
 </manifest>

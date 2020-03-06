@@ -38,8 +38,6 @@ public class Module1Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_module_test, container, false);
 
-        ViomiRouter.getInstance().inject(this);
-
         return view;
     }
 
@@ -47,5 +45,10 @@ public class Module1Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            String msg = bundle.getString("msg", "");
+            Toast.makeText(getContext(), "msg: " + msg, Toast.LENGTH_SHORT).show();
+        }
     }
 }

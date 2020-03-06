@@ -37,7 +37,7 @@ public class InterceptorImpl {
      */
     public static void init(Context context) {
         DefaultPoolExecutor.executor.execute(() -> {
-            if (Tools.isEmpty(Warehouse.interceptorsIndex)) {
+            if (!Tools.isEmpty(Warehouse.interceptorsIndex)) {
                 for (Map.Entry<Integer, Class<? extends IInterceptor>> entry : Warehouse.interceptorsIndex.entrySet()) {
                     Class<? extends IInterceptor> interceptorClass = entry.getValue();
                     try {

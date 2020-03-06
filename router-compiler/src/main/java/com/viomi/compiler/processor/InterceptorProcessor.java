@@ -145,7 +145,7 @@ public class InterceptorProcessor extends AbstractProcessor {
                  * 构建方法体重的语句
                  */
                 for (Map.Entry<Integer, Element> entry : interceptors.entrySet()) {
-                    methodBuilder.addStatement("interceptors.put(" + entry.getKey() + ", $T.class",
+                    methodBuilder.addStatement("interceptors.put(" + entry.getKey() + ", $T.class)",
                     ClassName.get((TypeElement)entry.getValue()));
                 }
             }

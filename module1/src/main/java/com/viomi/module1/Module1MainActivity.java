@@ -1,5 +1,6 @@
 package com.viomi.module1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -39,5 +40,10 @@ public class Module1MainActivity extends AppCompatActivity {
         ViomiRouter.getInstance().inject(this);
         Toast.makeText(this, "msg=" + msg, Toast.LENGTH_SHORT).show();
         Log.i("LLL", "msg=" + msg);
+
+        // 拦截器增加参数
+        Bundle bundle = getIntent().getExtras();
+        String extra = bundle.getString("extra");
+        Log.i("LLL", "extra=" + extra);
     }
 }
