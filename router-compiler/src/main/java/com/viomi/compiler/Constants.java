@@ -29,6 +29,7 @@ public class Constants {
     public static final String ANNOTATION_TYPE_EXTRA = "com.viomi.router.annotation.Extra";
     public static final String ANNOTATION_TYPE_INTERCEPTOR = "com.viomi.router.annotation.Interceptor";
     public static final String ANNOTATION_TYPE_EVENT = "com.viomi.router.annotation.Event";
+    public static final String ANNOTATION_TYPE_MODULE = "com.viomi.router.annotation.Module";
 
     public static final String IROUTE_GROUP = "com.viomi.router.core.template.IRouteGroup";
     public static final String IROUTE_ROOT = "com.viomi.router.core.template.IRouteRoot";
@@ -36,17 +37,21 @@ public class Constants {
     public static final String IINTERCEPTOR_GROUP = "com.viomi.router.core.template.IInterceptorGroup";
     public static final String IINTERCEPTOR = "com.viomi.router.core.template.IInterceptor";
     public static final String IEVENT = "com.viomi.router.core.template.IEvent";
+    public static final String IMODULEENTRANCE = "com.viomi.router.core.template.IModuleEntrance";
 
     public static final String SEPARATOR = "_";
     public static final String PROJECT = "ViomiRouter";
     public static final String NAME_OF_GROUP = PROJECT + SEPARATOR + "Group" + SEPARATOR;
     public static final String NAME_OF_ROOT = PROJECT + SEPARATOR + "Root" + SEPARATOR;
     public static final String NAME_OF_EVENT = PROJECT + SEPARATOR + "Event" + SEPARATOR;
+    public static final String NAME_OF_MODULEENTRANCE = PROJECT + SEPARATOR + "Entrance" + SEPARATOR;
     public static final String PACKAGE_OF_GENERATE_FILE = "com.viomi.router.routes";
     public static final String PACKAGE_OF_GENERATE_EVENT_FILE = "com.viomi.router.events";
+    public static final String PACKAGE_OF_GENERATE_MODULE_FILE = "com.viomi.module.entrances";
 
     public static final String METHOD_LOAD_INTO = "loadInto";
     public static final String METHOD_LOAD_EXTRA = "loadExtra";
+    public static final String METHOD_INIT_MODULE = "initModule";
 
     public static final String PARCELABLE = "android.os.Parcelable";
 

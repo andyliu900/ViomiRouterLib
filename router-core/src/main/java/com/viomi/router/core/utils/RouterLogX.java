@@ -1,7 +1,10 @@
 package com.viomi.router.core.utils;
 
+import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.viomi.router.core.ViomiRouter;
 
 /**
  * Copyright (C), 2014-2019, 佛山云米科技有限公司
@@ -79,6 +82,9 @@ public class RouterLogX {
     }
 
     private static void showLongLog(String tag, String subTag, String msg, LogType type) {
+        if (ViomiRouter.mIsShowDebugLog) {
+            return;
+        }
         msg = msg.trim();
         int index = 0;
         int maxLength = 4000;

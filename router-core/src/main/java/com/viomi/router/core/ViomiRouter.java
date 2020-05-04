@@ -74,6 +74,7 @@ public class ViomiRouter {
 
     private static ViomiRouter instance;
     private static Application mContext;
+    public static boolean mIsShowDebugLog;
     private Handler mHandler;
 
     private ViomiRouter() {
@@ -93,16 +94,22 @@ public class ViomiRouter {
     }
 
     public static void init(Application application) {
+        init(application, false);
+    }
+
+    public static void init(Application application, boolean isShowDebugLog) {
         mContext = application;
+        mIsShowDebugLog = isShowDebugLog;
 
         try {
             loadInfo();
             InterceptorImpl.init(application.getApplicationContext());
-            RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "初始化成功");
+            Log.i(Env.ROUTER_TAG, "初始化成功");
         } catch (Exception e) {
             e.printStackTrace();
-            RouterLogX.e(Env.ROUTER_TAG, SUB_TAG, "初始化失败  " + e.getMessage());
+            Log.e(Env.ROUTER_TAG, "初始化失败  " + e.getMessage());
         }
+
     }
 
     /**

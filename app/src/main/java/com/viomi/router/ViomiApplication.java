@@ -23,6 +23,6 @@ public class ViomiApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ViomiRouter.init(this);
+        ViomiRouter.init(this, true);
     }
 }
