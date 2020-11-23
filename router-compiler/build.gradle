@@ -16,7 +16,7 @@ targetCompatibility = "7"
 
 uploadArchives {
     repositories.mavenDeployer {
-        def deployPath = file(project.GITHUB_REPO_PATH)
+        def deployPath = file(project.GITLAB_REPO_PATH)
         repository(url: "file://${deployPath.absolutePath}")
         pom.project {
             groupId project.COMPILER_PUBLISH_GROUP_ID

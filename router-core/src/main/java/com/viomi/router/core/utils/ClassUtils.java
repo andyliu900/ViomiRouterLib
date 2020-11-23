@@ -67,7 +67,7 @@ public class ClassUtils {
                     Enumeration<String> dexEntries = dexFile.entries();
                     while (dexEntries.hasMoreElements()) {
                         String className = dexEntries.nextElement();
-                        RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "className: " + className);
+//                        RouterLogX.i(Env.ROUTER_TAG, SUB_TAG, "className: " + className);
                         if (!TextUtils.isEmpty(className) && className.startsWith(packageName)) {
                             classNames.add(className);
                         }

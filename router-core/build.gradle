@@ -52,7 +52,7 @@ dependencies {
 
 uploadArchives {
     repositories.mavenDeployer {
-        def deployPath = file(project.GITHUB_REPO_PATH)
+        def deployPath = file(project.GITLAB_REPO_PATH)
         repository(url: "file://${deployPath.absolutePath}")
         pom.project {
             groupId project.PUBLISH_GROUP_ID
